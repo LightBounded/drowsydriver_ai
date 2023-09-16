@@ -33,6 +33,15 @@ app.post("/truckers", async (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+
+  socket.on("get_truck_positions", async () => {
+    const db = await getDatabase();
+    const collection = db.collection("truck_positions");
+
+    const truckPositions = await collection.find().toArray();
+    io.emit("truck_positions", truckPositions);
+  });
+
   socket.on("disconnect", () => {
     console.log(`user ${socket.id} disconnected`);
   });
