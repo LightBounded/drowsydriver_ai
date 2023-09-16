@@ -10,7 +10,11 @@ app.use(cors());
 app.use(express.json());
 
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 
 app.get("/ping", (req, res) => {
   res.send("pong");
@@ -39,7 +43,7 @@ io.on("connection", (socket) => {
     const collection = db.collection("truck_positions");
 
     const truckPositions = await collection.find().toArray();
-    io.emit("truck_positions", truckPositions);
+    io.emit("get_truck_positions", truckPositions);
   });
 
   socket.on("disconnect", () => {
