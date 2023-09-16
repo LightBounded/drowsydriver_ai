@@ -3,7 +3,7 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { getDatabase } from "./db";
-import { createTrucks, startSimulation } from "./helpers";
+import { clearDatabase, startSimulation } from "./simulation";
 
 const app = express();
 app.use(cors());
@@ -31,6 +31,25 @@ app.post("/truckers", async (req, res) => {
   res.send(result);
 });
 
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("get_truck_positions", async () => {
+    const db = await getDatabase();
+    const collection = db.collection("truck_positions");
+
+    const truckPositions = await collection.find().toArray();
+    io.emit("truck_positions", truckPositions);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`user ${socket.id} disconnected`);
+  });
+});
+
 httpServer.listen(4000, async () => {
+  await clearDatabase();
+  startSimulation(5);
+
   console.log("listening on *:4000");
 });
