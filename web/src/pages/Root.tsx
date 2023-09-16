@@ -5,7 +5,9 @@ export function Root() {
   return (
     <>
       <Sidebar />
-      <Outlet />
+      <div className="flex-1 relative">
+        <Outlet />
+      </div>
     </>
   );
 }

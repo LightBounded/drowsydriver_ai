@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 #root {
-    @apply flex h-screen bg-gray-900 text-blue-200
+    @apply flex h-screen bg-black text-white
 }
