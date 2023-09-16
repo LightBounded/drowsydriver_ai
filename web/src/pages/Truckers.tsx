@@ -22,7 +22,7 @@ export function Truckers() {
           bearing: 0,
           pitch: 0,
         }}
-        mapStyle="mapbox://styles/mapbox/dark-v9"
+        mapStyle="mapbox://styles/jaz123/clmllmyv904i701qi8ops0bkg"
       >
         <Marker
           longitude={-122.4}
