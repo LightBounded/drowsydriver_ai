@@ -7,13 +7,13 @@ import { io } from ".";
 export const startSimulation = async (numberOfTrucks: number) => {
   await createTrucks(numberOfTrucks);
   await createTruckers(numberOfTrucks);
-  await createInitialTruckPositions(numberOfTrucks);
+  // await createInitialTruckPositions(numberOfTrucks);
 
-  setInterval(async () => {
-    console.log("Moving trucks");
-    await moveTrucks(numberOfTrucks);
-    console.log("Trucks moved");
-  }, 5000);
+  // setInterval(async () => {
+  //   console.log("Moving trucks");
+  //   await moveTrucks(numberOfTrucks);
+  //   console.log("Trucks moved");
+  // }, 5000);
 };
 
 const createTrucks = async (n: number) => {
@@ -42,7 +42,7 @@ const createTruckers = async (n: number) => {
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
       phone: faker.phone.number(),
-      truckId: trucks[i]._id,
+      truckId: null,
     };
     truckers.push(trucker);
   }
