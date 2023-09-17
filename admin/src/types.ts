@@ -1,5 +1,8 @@
+import type { ObjectId } from "mongodb";
+
 export interface Trucker {
-  truckId?: string | null;
+  _id?: ObjectId | string | null;
+  truckId?: ObjectId | string | null;
   firstName: string;
   lastName: string;
   age: number;
@@ -8,12 +11,13 @@ export interface Trucker {
 }
 
 export interface Truck {
-  truckId?: string | null;
+  _id?: ObjectId | string | null;
   plateNumber: string;
 }
 
 export interface TruckPosition {
-  truckId?: string | null;
+  _id?: ObjectId | string | null;
+  truckId?: ObjectId | string | null;
   lon: number;
   lat: number;
   timestamp: Date;

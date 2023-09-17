@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { Truck, Trucker } from "../../../api/src/types";
+import { Truck, Trucker } from "../types";
 
 interface AppStateContextValues {
   truck: Truck | null;

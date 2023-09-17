@@ -1,7 +1,7 @@
 import Map, { Marker } from "react-map-gl";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { useQuery } from "@tanstack/react-query";
-import { TruckPosition, Trucker } from "../../../api/src/types";
+import { TruckPosition, Trucker } from "../types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { socket } from "../utils";
 
