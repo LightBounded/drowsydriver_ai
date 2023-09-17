@@ -1,6 +1,8 @@
 import { getDatabase } from "./db";
 import { Truck, TruckPosition, Trucker } from "./types";
 import { faker } from "@faker-js/faker";
+import { getLatestTruckPositions } from "./utils";
+import { io } from ".";
 
 export const startSimulation = async (numberOfTrucks: number) => {
   await createTrucks(numberOfTrucks);
@@ -69,17 +71,18 @@ export const createInitialTruckPositions = async (n: number) => {
 
 export const moveTrucks = async (n: number) => {
   const db = await getDatabase();
-  const truckPositions = await db
-    .collection("truck_positions")
-    .find()
-    .toArray();
+  const latestTructPositions = await getLatestTruckPositions();
 
   let updatedTruckPositions: Omit<TruckPosition, "_id">[] = [];
   for (let i = 0; i < n; i++) {
     const truckPosition: Omit<TruckPosition, "_id"> = {
-      truckId: truckPositions[i].truckId,
-      lon: truckPositions[i].lon + faker.number.float({ min: -0.1, max: 0.1 }),
-      lat: truckPositions[i].lat + faker.number.float({ min: -0.1, max: 0.1 }),
+      truckId: latestTructPositions[i].truckId,
+      lon:
+        latestTructPositions[i].lon +
+        faker.number.float({ min: -0.1, max: 0.1 }),
+      lat:
+        latestTructPositions[i].lat +
+        faker.number.float({ min: -0.1, max: 0.1 }),
       timestamp: new Date(),
     };
     updatedTruckPositions.push(truckPosition);
@@ -87,6 +90,7 @@ export const moveTrucks = async (n: number) => {
 
   const collection = db.collection("truck_positions");
   await collection.insertMany(updatedTruckPositions);
+  io.emit("truck_positions", await getLatestTruckPositions());
 };
 
 export const clearDatabase = async () => {

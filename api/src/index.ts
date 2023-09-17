@@ -4,13 +4,15 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { getDatabase } from "./db";
 import { clearDatabase, startSimulation } from "./simulation";
+import { TruckPosition } from "./types";
+import { getLatestTruckPositions } from "./utils";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
+export const io = new Server(httpServer, {
   cors: {
     origin: "*",
   },
@@ -39,11 +41,9 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("get_truck_positions", async () => {
-    const db = await getDatabase();
-    const collection = db.collection("truck_positions");
-
-    const truckPositions = await collection.find().toArray();
-    io.emit("get_truck_positions", truckPositions);
+    const latestTruckPositions = await getLatestTruckPositions();
+    console.log("sending truck positions to client: ", latestTruckPositions);
+    io.emit("truck_positions", Object.values(latestTruckPositions));
   });
 
   socket.on("disconnect", () => {

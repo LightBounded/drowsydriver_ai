@@ -11,12 +11,12 @@ export interface Trucker {
 }
 
 export interface Truck {
-  _id: number;
+  _id: ObjectId;
   plateNumber: string;
 }
 
 export interface TruckPosition {
-  _id: number;
+  _id: ObjectId;
   truckId: ObjectId;
   lon: number;
   lat: number;

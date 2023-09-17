@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import {
   RouterProvider,
@@ -11,6 +10,7 @@ import { Root } from "./pages/Root";
 import "./index.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Truckers } from "./pages/Truckers";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const rootRoute = new RootRoute({
   component: Root,
@@ -38,12 +38,14 @@ declare module "@tanstack/react-router" {
   }
 }
 
+const queryClient = new QueryClient();
+
 const rootElement = document.getElementById("root");
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <StrictMode>
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-    </StrictMode>
+    </QueryClientProvider>
   );
 }
