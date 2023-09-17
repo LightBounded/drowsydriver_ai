@@ -74,6 +74,5 @@ def detect_yawning(image: np.ndarray) -> bool:
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
     detector, predictor = initialize_detector_and_predictor()
+    app.run(debug=True, port=8080)
