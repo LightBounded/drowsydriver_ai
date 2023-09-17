@@ -2,7 +2,8 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "build": "tsc"
   },
   "license": "ISC",
   "devDependencies": {

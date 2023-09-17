@@ -75,7 +75,9 @@ io.on("connection", (socket) => {
       const db = await getDatabase();
       const collection = db.collection("trucker_positions");
       await collection.insertOne(newTruckPosition);
-      io.emit("truck_position", newTruckPosition);
+      const latestTruckPositions = await getLatestTruckPositions();
+      console.log("sending truck positions to client: ", latestTruckPositions);
+      io.emit("truck_positions", Object.values(latestTruckPositions));
     }
   );
 

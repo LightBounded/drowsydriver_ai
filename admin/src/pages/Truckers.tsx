@@ -38,6 +38,7 @@ export function Truckers() {
       setTruckPositions(truckPositions);
     });
 
+
     return () => {
       socket.off("truck_positions");
     };
@@ -55,12 +56,12 @@ export function Truckers() {
         {truckPositions?.map((truckPosition) => {
           const trucker = truckers?.find(
             (trucker) =>
-              trucker.truckId.toString() === truckPosition.truckId.toString()
+              (trucker.truckId as string) === (truckPosition.truckId)
           );
 
           return (
             <Marker
-              key={truckPosition._id.toString()}
+              key={truckPosition._id as string}
               longitude={truckPosition.lon}
               latitude={truckPosition.lat}
               color="blue"
