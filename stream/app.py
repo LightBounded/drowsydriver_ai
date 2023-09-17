@@ -41,9 +41,9 @@ def base64_to_opencv() -> tuple[Response, int]:
         is_yawning: bool = detect_yawning(opencv_image)
 
         if is_yawning:
-            return jsonify({'message': 'Yawning detected in the image'}), 200
+            return jsonify({'is_yawning': 'true'}), 200
         else:
-            return jsonify({'message': 'No yawning detected in the image'}), 200
+            return jsonify({'is_yawning': 'false'}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
