@@ -61,6 +61,7 @@ export const createInitialTruckPositions = async (n: number) => {
       lon: faker.location.longitude(),
       lat: faker.location.latitude(),
       timestamp: new Date(),
+      isDrowsy: false,
     };
     truckPositions.push(truckPosition);
   }
@@ -84,6 +85,7 @@ export const moveTrucks = async (n: number) => {
         latestTructPositions[i].lat +
         faker.number.float({ min: -0.1, max: 0.1 }),
       timestamp: new Date(),
+      isDrowsy: false,
     };
     updatedTruckPositions.push(truckPosition);
   }
