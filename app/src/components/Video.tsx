@@ -33,7 +33,7 @@ export function Video() {
     socket.emit("update_truck_position", {
       photo,
       longitude: location.lng,
-      latitude: location.lng,
+      latitude: location.lat,
       truck,
     });
   }, [getPhoto, truck]);

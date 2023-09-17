@@ -37,8 +37,8 @@ services:
       - traefik.http.routers.whoami.tls=true
       - traefik.http.routers.whoami.tls.certresolver=cloudflare
   app:
-    #profiles:
-    #  - frontend
+    profiles:
+      - disabled
     build:
       context: ./app
     environment:
@@ -47,6 +47,8 @@ services:
     ports:
       - "3000:3000"
   api:
+    profiles:
+      - disabled
     build:
       context: ./api
     env_file:
@@ -61,6 +63,8 @@ services:
       - traefik.http.routers.whoami.tls=true
       - traefik.http.routers.whoami.tls.certresolver=cloudflare
   admin:
+    profiles:
+      - disabled
     build:
       context: ./admin
     env_file:
@@ -79,10 +83,10 @@ services:
       context: ./stream
     ports:
       - "8080:8080"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`ddstreaming.warrensnipes.org`)
-      - traefik.http.services.whoami.loadbalancer.server.port=8080
-      - traefik.http.routers.whoami.entrypoints=websecure
-      - traefik.http.routers.whoami.tls=true
-      - traefik.http.routers.whoami.tls.certresolver=cloudflare
+    #labels:
+    ##  - traefik.enable=true
+     # - traefik.http.routers.whoami.rule=Host(`ddstreaming.warrensnipes.org`)
+      #- traefik.http.services.whoami.loadbalancer.server.port=8080
+      ##- traefik.http.routers.whoami.entrypoints=websecure
+      # traefik.http.routers.whoami.tls=true
+      #- traefik.http.routers.whoami.tls.certresolver=cloudflare

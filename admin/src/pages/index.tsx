@@ -72,7 +72,7 @@ export function Index() {
           );
         })}
       </Map>
-      <TruckersList
+      <TruckList
         truckers={truckers}
         truckPositions={truckPositions}
         setMapViewState={setMapViewState}
@@ -86,40 +86,47 @@ interface TruckersListProps {
   truckPositions?: TruckPosition[];
   setMapViewState: Dispatch<SetStateAction<MapViewState>>;
 }
-function TruckersList({
+function TruckList({
   truckers,
   truckPositions,
   setMapViewState,
 }: TruckersListProps) {
+  const activeTruckers = truckers?.filter((trucker) =>
+    truckPositions?.find(
+      (truckPosition) => truckPosition.truckId === trucker.truckId
+    )
+  );
   return (
     <div className="absolute top-4 left-4 bg-neutral-950 p-4 rounded">
-      <h1 className="text-white text-xl font-bold">Truckers</h1>
-      {truckers?.length === 0 && (
-        <div className="text-white">No truckers found.</div>
+      <h1 className="text-white text-xl font-bold">Active Truckers</h1>
+      {activeTruckers?.length === 0 && (
+        <div className="text-white">No active truckers found</div>
       )}
-      <ul className="mt-4">
-        {truckers?.map((trucker) => {
-          const truckPosition = truckPositions?.find(
-            (truckPosition) => truckPosition.truckId === trucker.truckId
-          );
+      {activeTruckers && activeTruckers.length > 0 && (
+        <ul className="mt-4">
+          {activeTruckers?.map((trucker) => {
+            const truckPosition = truckPositions?.find(
+              (truckPosition) => truckPosition.truckId === trucker.truckId
+            );
 
-          return (
-            <li key={trucker._id as string} className="text-white">
-              <button
-                onClick={() => {
-                  setMapViewState({
-                    latitude: truckPosition?.lat ?? 0,
-                    longitude: truckPosition?.lon ?? 0,
-                    zoom: 8,
-                  });
-                }}
-              >
-                {trucker.firstName} {trucker.lastName}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+            return (
+              <li key={trucker._id as string} className="text-white">
+                <button
+                  onClick={() => {
+                    setMapViewState({
+                      latitude: truckPosition?.lat ?? 0,
+                      longitude: truckPosition?.lon ?? 0,
+                      zoom: 8,
+                    });
+                  }}
+                >
+                  {trucker.firstName} {trucker.lastName}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

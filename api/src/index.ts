@@ -81,23 +81,24 @@ io.on("connection", (socket) => {
       const collection = db.collection("truck_positions");
 
       console.log(photo);
-      // const postReq = http.request(
-      //   {
-      //     method: "POST",
-      //     host: "localhost",
-      //     port: 8080,
-      //     path: "/is_drowsy",
-      //     headers: { "Content-Type": "application/json" },
-      //   },
-      //   (res) => {
-      //     res.setEncoding("utf8");
-      //   }
-      // );
-      // postReq.write(
-      //   JSON.stringify({
-      //     photo,
-      //   })
-      // );
+      const postReq = http.request(
+        {
+          method: "POST",
+          host: "localhost",
+          port: 8080,
+          path: "/is_drowsy",
+          headers: { "Content-Type": "application/json" },
+        },
+        (res) => {
+          res.setEncoding("utf8");
+        }
+      );
+      postReq.write(
+        JSON.stringify({
+          base64_image: photo,
+        })
+      );
+
 
       await collection.insertOne({
         truckId: new ObjectId(truck._id as string),
