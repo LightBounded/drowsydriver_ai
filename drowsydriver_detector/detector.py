@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import math
-import time
 from typing import Any, Tuple
 
 import cv2
@@ -15,7 +14,7 @@ frame_width = 1024
 frame_height = 576
 
 
-def initialize_detector_and_predictor():
+def initialize_detector_and_predictor() -> Tuple[Any, Any]:
     """
     Load the facial landmark predictor and return the detector and predictor objects.
 
@@ -466,6 +465,30 @@ def mouth_aspect_ratio(mouth):
 
     # return the mouth aspect ratio
     return mar
+
+
+def is_yawning(detector, predictor, image: cv2.Mat | np.ndarray, threshold: float) -> bool:
+    # Get face rects
+    rects = detector(image, 0)
+    print(f'len(rects)={len(rects)}')
+
+    (m_start, m_end) = (49, 68)
+
+    for rect in rects:
+        # determine the facial landmarks for the face region, then
+        # convert the facial landmark (x, y)-coordinates to a NumPy
+        # array
+        shape = predictor(image, rect)
+        shape = face_utils.shape_to_np(shape)
+
+        mouth = shape[m_start:m_end]
+        mar = mouth_aspect_ratio(mouth)
+
+        # Draw text if mouth is open
+        if mar > threshold:
+            return True
+
+    return False
 
 
 def main():
