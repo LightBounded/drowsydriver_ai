@@ -18,8 +18,5 @@ RUN pip show drowsydriver_detector
 # Expose port 80 for the Flask app to listen on
 EXPOSE 8080
 
-# Define environment variable
-ENV NAME World
-
 # Run app.py when the container launches
 CMD ["python", "app.py"]
