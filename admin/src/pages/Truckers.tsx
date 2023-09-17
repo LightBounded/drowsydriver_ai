@@ -38,7 +38,6 @@ export function Truckers() {
       setTruckPositions(truckPositions);
     });
 
-
     return () => {
       socket.off("truck_positions");
     };
@@ -55,8 +54,7 @@ export function Truckers() {
       >
         {truckPositions?.map((truckPosition) => {
           const trucker = truckers?.find(
-            (trucker) =>
-              (trucker.truckId as string) === (truckPosition.truckId)
+            (trucker) => trucker.truckId === truckPosition.truckId
           );
 
           return (
@@ -103,12 +101,11 @@ function TruckersList({
       <ul className="mt-4">
         {truckers?.map((trucker) => {
           const truckPosition = truckPositions?.find(
-            (truckPosition) =>
-              truckPosition.truckId.toString() === trucker.truckId.toString()
+            (truckPosition) => truckPosition.truckId === trucker.truckId
           );
 
           return (
-            <li key={trucker._id.toString()} className="text-white">
+            <li key={trucker._id as string} className="text-white">
               <button
                 onClick={() => {
                   setMapViewState({

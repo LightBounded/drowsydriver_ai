@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import { getDatabase } from "./db";
 import { clearDatabase, startSimulation } from "./simulation";
 import { getLatestTruckPositions } from "./utils";
-import { TruckPosition } from "./types";
+import { Truck, TruckPosition } from "./types";
 import { ObjectId } from "mongodb";
 
 const app = express();
@@ -71,10 +71,25 @@ io.on("connection", (socket) => {
 
   socket.on(
     "update_truck_position",
-    async (newTruckPosition: Omit<TruckPosition, "_id">) => {
+    async ({
+      truck,
+      longitude,
+      latitude,
+    }: {
+      truck: Truck;
+      longitude: number;
+      latitude: number;
+    }) => {
       const db = await getDatabase();
-      const collection = db.collection("trucker_positions");
-      await collection.insertOne(newTruckPosition);
+      const collection = db.collection("truck_positions");
+      console.log(truck, longitude, latitude);
+      await collection.insertOne({
+        truckId: new ObjectId(truck._id as string),
+        lon: longitude,
+        lat: latitude,
+        timestamp: new Date(),
+      });
+
       const latestTruckPositions = await getLatestTruckPositions();
       console.log("sending truck positions to client: ", latestTruckPositions);
       io.emit("truck_positions", Object.values(latestTruckPositions));

@@ -20,7 +20,7 @@ export function Video() {
   const sendLocation = useCallback(async () => {
     try {
       await navigator.geolocation.getCurrentPosition(({ coords }) => {
-        socket.emit("location", {
+        socket.emit("update_truck_position", {
           truck,
           longitude: coords.longitude,
           latitude: coords.latitude,
