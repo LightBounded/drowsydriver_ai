@@ -21,4 +21,5 @@ export interface TruckPosition {
   lon: number;
   lat: number;
   timestamp: Date;
+  isDrowsy: boolean;
 }
