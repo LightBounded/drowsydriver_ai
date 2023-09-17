@@ -5,3 +5,4 @@ Flask==2.3.3
 imutils==0.5.4
 dlib==19.24.2
 drowsydriver_detector@ git+https://github.com/DrowsyDriverAI/drowsydriver#egg=drowsydriver_detector&subdirectory=drowsydriver_detector
+scipy==1.11.2
