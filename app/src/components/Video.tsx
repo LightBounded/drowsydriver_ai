@@ -1,35 +1,42 @@
-import { useCallback, useEffect, useRef } from "react";
-import { wait, socket } from "../utils";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { socket, wait } from "../utils";
 import { useAppState } from "../context/useAppState";
+import { LoadingOverlay } from "./LoadingOverlay";
 
 export function Video() {
-  const { truck } = useAppState();
+  const { truck, trucker } = useAppState();
   const videoRef = useRef<HTMLVideoElement>(null);
   const photoRef = useRef<HTMLCanvasElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const sendPhoto = useCallback(async () => {
+  const getPhoto = useCallback(async () => {
     const video = videoRef.current;
     const photo = photoRef.current;
     if (!video || !photo) return;
 
     const data = photo.toDataURL("image/jpeg");
+    return data;
+  }, []);
 
-    socket.emit("photo", { truck, data });
-  }, [truck]);
+  const getLocation = async () => {
+    const { coords } = await new Promise<GeolocationPosition>((resolve) => {
+      navigator.geolocation.getCurrentPosition(resolve);
+    });
+    return { lat: coords.latitude, lng: coords.longitude };
+  };
 
-  const sendLocation = useCallback(async () => {
-    try {
-      await navigator.geolocation.getCurrentPosition(({ coords }) => {
-        socket.emit("update_truck_position", {
-          truck,
-          longitude: coords.longitude,
-          latitude: coords.latitude,
-        });
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, [truck]);
+  const sendData = useCallback(async () => {
+    const photo = await getPhoto();
+    const location = await getLocation();
+
+    console.log({ photo, location, truck });
+    socket.emit("update_truck_position", {
+      photo,
+      longitude: location.lng,
+      latitude: location.lng,
+      truck,
+    });
+  }, [getPhoto, truck]);
 
   const getVideo = useCallback(async () => {
     try {
@@ -40,12 +47,10 @@ export function Video() {
       if (!videoRef.current) return;
       videoRef.current.srcObject = mediaStream;
       await videoRef.current.play();
-      await wait(1); // Wait for video to load
-      sendPhoto();
     } catch (error) {
       console.error(error);
     }
-  }, [sendPhoto]);
+  }, []);
 
   const paintToCanvas = () => {
     const video = videoRef.current;
@@ -66,19 +71,28 @@ export function Video() {
   };
 
   useEffect(() => {
+    wait(1500).then(() => {
+      setIsLoading(false);
+    });
     getVideo();
-    sendLocation();
-
     setInterval(() => {
-      sendPhoto();
-      sendLocation();
+      sendData();
     }, 5000);
-  }, [getVideo, sendLocation, sendPhoto]);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [getVideo, sendData]);
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <video onCanPlay={() => paintToCanvas()} ref={videoRef} />
-      <canvas className="hidden" ref={photoRef} />
-    </div>
+    <>
+      <div className="flex flex-col justify-center h-screen bg-neutral-950 text-white max-w-md mx-auto p-8">
+        <h1 className="text-lg font-bold">Welcome, {trucker?.firstName}</h1>
+        <p className="mb-4">Keep your eyes on the road!</p>
+        <video onCanPlay={() => paintToCanvas()} ref={videoRef} />
+        <canvas className="hidden" ref={photoRef} />
+      </div>
+      <LoadingOverlay isLoading={isLoading} />
+    </>
   );
 }

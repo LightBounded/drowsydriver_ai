@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { createServer } from "http";
+import http, { createServer } from "http";
 import { Server } from "socket.io";
 import { getDatabase } from "./db";
 import { clearDatabase, startSimulation } from "./simulation";
@@ -42,14 +42,10 @@ app.put("/truckers/:id", async (req, res) => {
   const db = await getDatabase();
   const collection = db.collection("truckers");
   const trucker = req.body;
-  delete trucker._id;
-
   const result = await collection.updateOne(
-    // @ts-ignore
     { _id: new ObjectId(req.params.id) },
     { $set: { truckId: new ObjectId(trucker.truckId) } }
   );
-  console.log(result);
   res.send(result);
 });
 
@@ -65,7 +61,6 @@ io.on("connection", (socket) => {
 
   socket.on("get_truck_positions", async () => {
     const latestTruckPositions = await getLatestTruckPositions();
-    console.log("sending truck positions to client: ", latestTruckPositions);
     io.emit("truck_positions", Object.values(latestTruckPositions));
   });
 
@@ -75,23 +70,44 @@ io.on("connection", (socket) => {
       truck,
       longitude,
       latitude,
+      photo,
     }: {
       truck: Truck;
+      photo: string;
       longitude: number;
       latitude: number;
     }) => {
       const db = await getDatabase();
       const collection = db.collection("truck_positions");
-      console.log(truck, longitude, latitude);
+
+      console.log(photo);
+      // const postReq = http.request(
+      //   {
+      //     method: "POST",
+      //     host: "localhost",
+      //     port: 8080,
+      //     path: "/is_drowsy",
+      //     headers: { "Content-Type": "application/json" },
+      //   },
+      //   (res) => {
+      //     res.setEncoding("utf8");
+      //   }
+      // );
+      // postReq.write(
+      //   JSON.stringify({
+      //     photo,
+      //   })
+      // );
+
       await collection.insertOne({
         truckId: new ObjectId(truck._id as string),
         lon: longitude,
         lat: latitude,
         timestamp: new Date(),
-      });
+        isDrowsy: false,
+      } satisfies TruckPosition);
 
       const latestTruckPositions = await getLatestTruckPositions();
-      console.log("sending truck positions to client: ", latestTruckPositions);
       io.emit("truck_positions", Object.values(latestTruckPositions));
     }
   );
