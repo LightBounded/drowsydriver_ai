@@ -4,8 +4,9 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { getDatabase } from "./db";
 import { clearDatabase, startSimulation } from "./simulation";
-import { TruckPosition } from "./types";
 import { getLatestTruckPositions } from "./utils";
+import { TruckPosition } from "./types";
+import { ObjectId } from "mongodb";
 
 const app = express();
 app.use(cors());
@@ -37,6 +38,28 @@ app.post("/truckers", async (req, res) => {
   res.send(result);
 });
 
+app.put("/truckers/:id", async (req, res) => {
+  const db = await getDatabase();
+  const collection = db.collection("truckers");
+  const trucker = req.body;
+  delete trucker._id;
+
+  const result = await collection.updateOne(
+    // @ts-ignore
+    { _id: new ObjectId(req.params.id) },
+    { $set: { truckId: new ObjectId(trucker.truckId) } }
+  );
+  console.log(result);
+  res.send(result);
+});
+
+app.get("/trucks", async (req, res) => {
+  const db = await getDatabase();
+  const collection = db.collection("trucks");
+  const trucks = await collection.find().toArray();
+  res.send(trucks);
+});
+
 io.on("connection", (socket) => {
   console.log("a user connected");
 
@@ -45,6 +68,16 @@ io.on("connection", (socket) => {
     console.log("sending truck positions to client: ", latestTruckPositions);
     io.emit("truck_positions", Object.values(latestTruckPositions));
   });
+
+  socket.on(
+    "update_truck_position",
+    async (newTruckPosition: Omit<TruckPosition, "_id">) => {
+      const db = await getDatabase();
+      const collection = db.collection("trucker_positions");
+      await collection.insertOne(newTruckPosition);
+      io.emit("truck_position", newTruckPosition);
+    }
+  );
 
   socket.on("disconnect", () => {
     console.log(`user ${socket.id} disconnected`);

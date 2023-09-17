@@ -1,24 +1,22 @@
 # Use an official Node.js runtime as a parent image
-FROM node:14
+FROM node:18
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml (or pnpm-lock.json) to the working directory
-COPY package.json .
+# Copy package.json and package-lock.json (or pnpm-lock.yaml) to the working directory
+# COPY package.json ./
+# COPY package-lock.json ./  
+# Use package-lock.json if you're using npm
+# or
 
-# Use pnpm-lock.yaml if available, otherwise use pnpm-lock.json
-COPY pnpm-lock.yaml .  
+COPY . .
+# Use pnpm-lock.yaml if you're using pnpm
 
-
-# Install PNPM globally (if not already installed)
-RUN npm install -g pnpm
-
-# Install dependencies using PNPM
-RUN pnpm install
+# Install dependencies
+RUN npm install
 
 # Copy the rest of the application files to the container
-COPY . .
 
 # Build the React app using Vite
 RUN npm run build
