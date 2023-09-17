@@ -1,5 +1,5 @@
 import { getDatabase } from "./db";
-import { TruckPosition } from "./types";
+import { TruckPosition } from "types";
 
 export const getLatestTruckPositions = async () => {
   const db = await getDatabase();

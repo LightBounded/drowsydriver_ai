@@ -1,5 +1,5 @@
 import { getDatabase } from "./db";
-import { Truck, TruckPosition, Trucker } from "./types";
+import { Truck, TruckPosition, Trucker } from "types";
 import { faker } from "@faker-js/faker";
 import { getLatestTruckPositions } from "./utils";
 import { io } from ".";

@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import { getDatabase } from "./db";
 import { clearDatabase, startSimulation } from "./simulation";
 import { getLatestTruckPositions } from "./utils";
-import { Truck, TruckPosition } from "./types";
+import { Truck, TruckPosition } from "types";
 import { ObjectId } from "mongodb";
 
 const app = express();

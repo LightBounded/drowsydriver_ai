@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Truck, Trucker } from "../../../api/src/types";
+import { Truck, Trucker } from "../types";
 import { useAppState } from "../context/useAppState";
 
 export function Selection() {
