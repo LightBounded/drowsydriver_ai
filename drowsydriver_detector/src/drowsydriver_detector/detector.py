@@ -23,7 +23,7 @@ def initialize_detector_and_predictor() -> Tuple[Any, Any]:
     print("loading facial landmark predictor...")
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(
-        './dlib_shape_predictor/shape_predictor_68_face_landmarks.dat')
+        './shape_predictor_68_face_landmarks.dat')
     return detector, predictor
 
 
